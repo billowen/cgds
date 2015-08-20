@@ -7,12 +7,14 @@ SET (INCS
 	tags.h
 	elements.h
 	path.h
+	structures.h
 )
 SET (SRCS
 	boundary.cpp
 	gdsio.cpp
 	elements.cpp
 	path.cpp
+	structures.cpp
 	)
 add_library (libgds ${INCS} ${SRCS})
 
