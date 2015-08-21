@@ -12,6 +12,7 @@ SET (INCS
 	aref.h
 	node.h
 	text.h
+	library.h
 )
 SET (SRCS
 	boundary.cpp
@@ -23,6 +24,7 @@ SET (SRCS
 	aref.cpp
 	node.cpp
 	text.cpp
+	library.cpp
 	)
 add_library (libgds ${INCS} ${SRCS})
 

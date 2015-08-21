@@ -35,6 +35,7 @@ SRef::SRef() :Element(SREF)
 	Strans = 0;
 	Angle = 0;
 	Mag = 1;
+	//ReferTo = std::shared_ptr<Structure>();
 }
 
 SRef::~SRef()
@@ -99,6 +100,11 @@ void SRef::setStrans(short strans)
 void SRef::setStrans(STRANS_FLAG flag, bool enable)
 {
 	Strans = enable ? (Strans | flag) : (Strans & (~flag));
+}
+
+void SRef::setReference(std::shared_ptr<Structure> ref)
+{
+	ReferTo = ref;
 }
 
 int SRef::read(std::ifstream &in, std::string &msg)

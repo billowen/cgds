@@ -38,6 +38,7 @@ ARef::ARef() :Element(AREF)
 	Col = 0;
 	Angle = 0;
 	Mag = 1;
+	//ReferTo = std::shared_ptr<Structure>();
 }
 
 ARef::~ARef()
@@ -118,6 +119,11 @@ void ARef::setStrans(short strans)
 void ARef::setStrans(STRANS_FLAG flag, bool enable)
 {
 	Strans = enable ? (Strans | flag) : (Strans & (~flag));
+}
+
+void ARef::setReference(std::shared_ptr<Structure> ref)
+{
+	ReferTo = ref;
 }
 
 int ARef::read(std::ifstream &in, std::string &msg)

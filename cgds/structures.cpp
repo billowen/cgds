@@ -91,7 +91,7 @@ size_t Structure::size() const
 	return Elements.size();
 }
 
-std::weak_ptr<Element> Structure::get(int index) const
+std::shared_ptr<Element> Structure::get(int index) const
 {
 	if (index < 0 || index >= Elements.size())
 		return std::shared_ptr<Element>();
@@ -115,6 +115,24 @@ void Structure::add(std::shared_ptr<Element> new_element)
 	if (!existed)
 		Elements.push_back(new_element);
 			
+}
+
+void Structure::addReferBy(std::shared_ptr<Structure> cell)
+{
+	bool existed = false;
+	for (auto tmp : ReferBy)
+	{
+		auto node = tmp.lock();
+		if (!node)
+			continue;
+		if (node->name() == cell->name())
+		{
+			existed = true;
+			break;
+		}
+	}
+	if (!existed)
+		ReferBy.push_back(cell);
 }
 
 int Structure::read(std::ifstream &in, std::string &msg)

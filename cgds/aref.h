@@ -48,6 +48,7 @@ class ARef : public Element {
 	std::vector<Point>  Pts;
 	double              Angle;
 	double              Mag;
+	std::weak_ptr<Structure> ReferTo;
 
 public:
 	ARef();
@@ -69,6 +70,7 @@ public:
 	void setMag(double mag);
 	void setStrans(short strans);
 	void setStrans(STRANS_FLAG flag, bool enable = true);
+	void setReference(std::shared_ptr<Structure> ref);
 
 	virtual int read(std::ifstream &in, std::string &msg);
 	virtual int write(std::ofstream &out, std::string &msg);

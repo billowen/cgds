@@ -45,6 +45,7 @@ namespace GDS {
 		short           Acc_second;
 
 		std::vector<std::shared_ptr<Element> > Elements;
+		std::vector<std::weak_ptr<Structure> > ReferBy;
 	public:
 		Structure();
 		Structure(std::string name);
@@ -52,9 +53,10 @@ namespace GDS {
 
 		std::string name() const;
 		size_t size() const;
-		std::weak_ptr<Element> get(int index) const;
+		std::shared_ptr<Element> get(int index) const;
 
 		void add(std::shared_ptr<Element> new_element);
+		void addReferBy(std::shared_ptr<Structure> cell);
 
 		int read(std::ifstream &in, std::string &msg);
 		int write(std::ofstream &out, std::string &msg);
