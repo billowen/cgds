@@ -8,6 +8,8 @@ SET (INCS
 	elements.h
 	path.h
 	structures.h
+	sref.h
+	aref.h
 )
 SET (SRCS
 	boundary.cpp
@@ -15,6 +17,8 @@ SET (SRCS
 	elements.cpp
 	path.cpp
 	structures.cpp
+	sref.cpp
+	aref.cpp
 	)
 add_library (libgds ${INCS} ${SRCS})
 
