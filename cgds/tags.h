@@ -78,6 +78,7 @@ enum Record_type : Byte
     ENDEL        = 0x11,
     SNAME        = 0x12,
     COLROW       = 0x13,
+	NODE		 = 0x15,
 
     TEXTTYPE     = 0x16,
     PRESENTATION = 0x17,
@@ -90,6 +91,7 @@ enum Record_type : Byte
     PATHTYPE     = 0x21,
 
     EFLAGS       = 0x26,
+	NODETYPE	 = 0x2a,
 
     PLEX         = 0x2f,
     BGNEXTN      = 0x30,
@@ -119,6 +121,7 @@ static std::map<int, std::string> Record_name = {
     { 0x11, "ENDEL" },
     { 0x12, "SNAME" },
     { 0x13, "COLROW" },
+	{ 0x15, "NODE" },
 
     { 0x16, "TEXTTYPE" },
     { 0x17, "PRESENTATION"},
@@ -131,6 +134,7 @@ static std::map<int, std::string> Record_name = {
     { 0x21, "PATHTYPE" },
 
     { 0x26, "EFLAGS" },
+	{ 0x2a, "NODETYPE" },
 
     { 0x2f, "PLEX" },
     { 0x30, "BGNEXTN" },

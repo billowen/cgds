@@ -29,6 +29,8 @@
 #include "sref.h"
 #include "aref.h"
 #include "gdsio.h"
+#include "text.h"
+#include "node.h"
 #include <ctime>
 
 namespace GDS
@@ -167,22 +169,42 @@ int Structure::read(std::ifstream &in, std::string &msg)
 			if (!readString(in, record_size - 4, Struct_name))
 				return FILE_ERROR;
 			break;
-		/*case TEXT:
+		case TEXT:
 		{
 			if (record_size != 4)
 			{
 				std::stringstream ss;
-				ss << "wrong record size of TEXT (";
-				ss << std::hex << record_size << record_type << data_type;
+				ss << "Wrong record size of TEXT (";
+				ss << std::hex << record_size << record_type << record_dt;
 				ss << ").";
-				std::string msg = ss.str();
-				throw FormatError(msg);
+				msg = ss.str();
+				return FORMAT_ERROR;
 			}
-			Text *e = new Text(this);
-			e->read(in);
-			Contents.push_back(e);
+			std::shared_ptr<Text> e = std::make_shared<Text>();
+			int error_code = e->read(in, msg);
+			if (error_code > 0)
+				return error_code;
+			Elements.push_back(e);
 			break;
-		}*/
+		}
+		case NODE:
+		{
+			if (record_size != 4)
+			{
+				std::stringstream ss;
+				ss << "Wrong record size of NODE (";
+				ss << std::hex << record_size << record_type << record_dt;
+				ss << ").";
+				msg = ss.str();
+				return FORMAT_ERROR;
+			}
+			std::shared_ptr<Node> e = std::make_shared<Node>();
+			int error_code = e->read(in, msg);
+			if (error_code > 0)
+				return error_code;
+			Elements.push_back(e);
+			break;
+		}
 		case BOUNDARY:
 		{
 			if (record_size != 4)
