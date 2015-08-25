@@ -58,6 +58,7 @@ public:
 	int width() const;
 	short pathType() const;
 	std::vector<Point> xy() const;
+	virtual bool bbox(int &x, int &y, int &w, int &h) const;
 
 	void setLayer(short layer);
 	void setDataType(short data_type);

@@ -152,7 +152,7 @@ int Node::write(std::ofstream &out, std::string &msg)
 	writeByte(out, Integer_2);
 	writeShort(out, NodeType);
 
-	record_size = 4 + 8 * Pts.size();
+    record_size = 4 + short(8 * Pts.size());
 	writeShort(out, record_size);
 	writeByte(out, XY);
 	writeByte(out, Integer_4);

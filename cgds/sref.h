@@ -26,7 +26,6 @@
 
 namespace GDS {
 class Structure;
-
 /*!
 	* \brief Class for 'SREF' GDSII element
 	*
@@ -58,6 +57,7 @@ public:
 	double mag() const;
 	short strans() const;
 	bool stransFlag(STRANS_FLAG flag) const;
+	virtual bool bbox(int &x, int &y, int &w, int &h) const;
 
 	void setStructName(std::string name);
 	void setXY(Point pt);

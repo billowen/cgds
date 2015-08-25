@@ -29,38 +29,39 @@
 
 namespace GDS {
 
-	class Structure {
-		std::string     Struct_name;
-		short           Mod_year;
-		short           Mod_month;
-		short           Mod_day;
-		short           Mod_hour;
-		short           Mod_minute;
-		short           Mod_second;
-		short           Acc_year;
-		short           Acc_month;
-		short           Acc_day;
-		short           Acc_hour;
-		short           Acc_minute;
-		short           Acc_second;
+class Structure {
+	std::string     Struct_name;
+	short           Mod_year;
+	short           Mod_month;
+	short           Mod_day;
+	short           Mod_hour;
+	short           Mod_minute;
+	short           Mod_second;
+	short           Acc_year;
+	short           Acc_month;
+	short           Acc_day;
+	short           Acc_hour;
+	short           Acc_minute;
+	short           Acc_second;
 
-		std::vector<std::shared_ptr<Element> > Elements;
-		std::vector<std::weak_ptr<Structure> > ReferBy;
-	public:
-		Structure();
-		Structure(std::string name);
-		~Structure();
+	std::vector<std::shared_ptr<Element> > Elements;
+	std::vector<std::weak_ptr<Structure> > ReferBy;
+public:
+	Structure();
+	Structure(std::string name);
+	~Structure();
 
-		std::string name() const;
-		size_t size() const;
-		std::shared_ptr<Element> get(int index) const;
+	std::string name() const;
+	size_t size() const;
+	std::shared_ptr<Element> get(int index) const;
+	bool bbox(int &x, int &y, int &w, int &h) const;
 
-		void add(std::shared_ptr<Element> new_element);
-		void addReferBy(std::shared_ptr<Structure> cell);
+	void add(std::shared_ptr<Element> new_element);
+	void addReferBy(std::shared_ptr<Structure> cell);
 
-		int read(std::ifstream &in, std::string &msg);
-		int write(std::ofstream &out, std::string &msg);
-	};
+	int read(std::ifstream &in, std::string &msg);
+	int write(std::ofstream &out, std::string &msg);
+};
 
 }
 

@@ -299,7 +299,7 @@ int Library::read(std::ifstream &in, std::string &msg)
 
 int Library::write(std::ofstream &out, std::string &msg)
 {
-	int record_size;
+    short record_size;
 
 	record_size = 6;
 	writeShort(out, record_size);
@@ -324,7 +324,7 @@ int Library::write(std::ofstream &out, std::string &msg)
 	writeShort(out, Acc_minute);
 	writeShort(out, Acc_second);
 
-	record_size = 4 + Lib_name.size();
+    record_size = 4 + short(Lib_name.size());
 	if (record_size % 2 != 0)
 		record_size += 1;
 	writeShort(out, record_size);

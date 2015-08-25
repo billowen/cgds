@@ -135,6 +135,33 @@ void Structure::addReferBy(std::shared_ptr<Structure> cell)
 		ReferBy.push_back(cell);
 }
 
+bool Structure::bbox(int &x, int &y, int &w, int &h) const
+{
+	int llx = GDS_MAX_INT;
+	int lly = GDS_MAX_INT;
+	int urx = GDS_MIN_INT;
+	int ury = GDS_MIN_INT;
+	bool ret = false;
+	for (auto node : Elements)
+	{
+		int _x, _y, _w, _h;
+		if (node->bbox(_x, _y, _w, _h))
+		{
+			ret = true;
+			llx = _x < llx ? _x : llx;
+			lly = _y < lly ? _y : lly;
+			urx = (_x + _w) > urx ? (_x + _w) : urx;
+			ury = (_y + _h) > ury ? (_y + _h) : ury;
+		}
+	}
+	x = llx;
+	y = lly;
+	w = urx - llx;
+	h = ury - lly;
+
+	return ret;
+}
+
 int Structure::read(std::ifstream &in, std::string &msg)
 {
 	if (!readShort(in, Mod_year)

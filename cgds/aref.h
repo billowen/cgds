@@ -25,7 +25,7 @@
 #include "elements.h"
 
 namespace GDS {
-
+class Structure;
 /*!
 	* \brief Class for 'AREF' GDSII element
 	*
@@ -62,6 +62,7 @@ public:
 	double mag() const;
 	short strans() const;
 	bool stransFlag(STRANS_FLAG flag) const;
+	virtual bool bbox(int &x, int &y, int &w, int &h) const;
 
 	void setStructName(std::string name);
 	void setRowCol(int row,  int col);

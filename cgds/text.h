@@ -59,6 +59,7 @@ public:
 	short strans() const;
 	Point xy() const;
 	std::string string() const;
+	virtual bool bbox(int &x, int &y, int &w, int &h) const;
 
 	void setLayer(short layer);
 	void setTextType(short text_type);

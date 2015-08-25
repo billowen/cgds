@@ -1,4 +1,7 @@
 cmake_minimum_required (VERSION 3.0)
+find_package(Qt5Gui)
+
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 project (cgds)
 SET (INCS 
@@ -31,6 +34,7 @@ add_library (libgds ${INCS} ${SRCS})
 
 
 target_include_directories(libgds PUBLIC ${CMAKE_SOURCE_DIR})
+target_link_libraries(libgds Qt5::Gui)
 
 
 

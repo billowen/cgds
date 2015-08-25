@@ -20,6 +20,7 @@
  **/
 
 #include <assert.h>
+#include <QtGui/QTransform>
 #include "sref.h"
 #include <sstream>
 #include "gdsio.h"
@@ -105,6 +106,30 @@ void SRef::setStrans(STRANS_FLAG flag, bool enable)
 void SRef::setReference(std::shared_ptr<Structure> ref)
 {
 	ReferTo = ref;
+}
+
+bool SRef::bbox(int &x, int &y, int &w, int &h) const
+{
+    if (ReferTo.expired())
+        return false;
+    int ref_x, ref_y, ref_w, ref_h;
+    std::shared_ptr<Structure> ref_cell = ReferTo.lock();
+    if (!ref_cell->bbox(ref_x, ref_y, ref_w, ref_h))
+        return false;
+    QTransform reflect_transform, mag_transform, rotate_transform, shift_transform;
+    if (stransFlag(REFLECTION))
+        reflect_transform.scale(1, -1);
+    mag_transform.scale(mag(), mag());
+    rotate_transform.rotate(angle());
+    shift_transform.translate(Pt.x, Pt.y);
+    QTransform transform = reflect_transform * mag_transform * rotate_transform * shift_transform;
+    QRect rect(ref_x, ref_y, ref_w, ref_h);
+    QRect rect2 = transform.mapRect(rect);
+    x = rect2.x();
+    y = rect2.y();
+    w = rect2.width();
+    h = rect2.height();
+	return true;
 }
 
 int SRef::read(std::ifstream &in, std::string &msg)
@@ -233,7 +258,7 @@ int SRef::write(std::ofstream &out, std::string &msg)
 	writeByte(out, Integer_2);
 	writeShort(out, Strans);
 
-	record_size = 4 + SName.size();
+    record_size = 4 + short(SName.size());
 	if (record_size % 2 != 0)
 		record_size += 1;
 	writeShort(out, record_size);

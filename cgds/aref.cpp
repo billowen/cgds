@@ -19,7 +19,7 @@
  * along with GDSII. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include <limits>
+#include <QtGui/QTransform>
 #include <assert.h>
 #include "aref.h"
 #include <sstream>
@@ -82,7 +82,7 @@ short ARef::strans() const
 
 bool ARef::stransFlag(STRANS_FLAG flag) const
 {
-	return Strans & flag;
+    return (Strans & flag) != 0;
 }
 
 void ARef::setStructName(std::string name)
@@ -124,6 +124,56 @@ void ARef::setStrans(STRANS_FLAG flag, bool enable)
 void ARef::setReference(std::shared_ptr<Structure> ref)
 {
 	ReferTo = ref;
+}
+
+bool ARef::bbox(int &x, int &y, int &w, int &h) const
+{
+    if (ReferTo.expired())
+        return false;
+    int ref_x, ref_y, ref_w, ref_h;
+    std::shared_ptr<Structure> ref_cell = ReferTo.lock();
+    if (!ref_cell->bbox(ref_x, ref_y, ref_w, ref_h))
+        return false;
+
+    assert(Pts.size() != 3);
+    QRect ref_rect(ref_x, ref_y, ref_w, ref_h);
+    int row_pitch_x = (Pts[2].x - Pts[0].x) / row();
+    int row_pitch_y = (Pts[2].y - Pts[0].y) / row();
+    int col_pitch_x = (Pts[1].x - Pts[0].x) / col();
+    int col_pitch_y = (Pts[1].y - Pts[0].y) / col();
+    QTransform reflect_transform, mag_transform, rotate_transform;
+    if (stransFlag(REFLECTION))
+        reflect_transform.scale(1, -1);
+    mag_transform.scale(mag(), mag());
+    rotate_transform.rotate(angle());
+    QTransform shift_transform[] = {
+        QTransform().translate(Pts[0].x, Pts[0].y),
+        QTransform().translate(Pts[0].x + col_pitch_x * (col() - 1),
+                               Pts[0].y + col_pitch_y * (col() - 1)),
+        QTransform().translate(Pts[0].x + row_pitch_x * (row() - 1),
+                               Pts[0].y + row_pitch_y * (row() - 1)),
+        QTransform().translate(Pts[0].x + row_pitch_x * (row() - 1) + col_pitch_x * (col() - 1),
+                               Pts[0].y + row_pitch_y * (row() - 1) + col_pitch_y * (col() - 1))
+    };
+    int llx = GDS_MAX_INT;
+    int lly = GDS_MAX_INT;
+    int urx = GDS_MIN_INT;
+    int ury = GDS_MIN_INT;
+    for (size_t i = 0; i < 3; i++)
+    {
+        QTransform transform = reflect_transform * mag_transform * rotate_transform * shift_transform[i];
+        QRect map_rect = transform.mapRect(ref_rect);
+        llx = map_rect.x() < llx ? map_rect.x() : llx;
+        lly = map_rect.y() < lly ? map_rect.y() : lly;
+        urx = map_rect.x() + map_rect.width() > urx ? map_rect.x() + map_rect.width() : urx;
+        ury = map_rect.y() + map_rect.height() > ury ? map_rect.y() + map_rect.height() : ury;
+    }
+    x = llx;
+    y = lly;
+    w = urx - llx;
+    h = ury - lly;
+
+	return true;
 }
 
 int ARef::read(std::ifstream &in, std::string &msg)
@@ -263,7 +313,7 @@ int ARef::write(std::ofstream &out, std::string &msg)
 	writeByte(out, Integer_2);
 	writeShort(out, Eflags);
 
-	record_size = 4 + SName.size();
+    record_size = 4 + short(SName.size());
 	if (record_size % 2 != 0)
 		record_size += 1;
 	writeShort(out, record_size);

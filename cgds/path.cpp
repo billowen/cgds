@@ -93,6 +93,78 @@ void Path::setXY(const std::vector<Point> &pts)
 	Pts = pts;
 }
 
+bool Path::bbox(int &x, int &y, int &w, int &h) const
+{
+	assert(Width > 0 && Pts.size() >= 2);
+	if (Width == 0 || Pts.size() < 2)
+		return false;
+
+	int llx = GDS_MAX_INT;
+	int lly = GDS_MAX_INT;
+	int urx = GDS_MIN_INT;
+	int ury = GDS_MIN_INT;
+	for (auto pt : Pts)
+	{
+		llx = pt.x < llx ? pt.x : llx;
+		lly = pt.y < lly ? pt.y : lly;
+		urx = pt.x > urx ? pt.x : urx;
+		ury = pt.y > ury ? pt.y : ury;
+	}
+	// extend the path
+	for (size_t i = 1; i < Pts.size(); i++)
+	{
+		if (Pts[i - 1].x == Pts[i].x)
+		{
+			llx = (Pts[i].x - Width / 2) < llx ? (Pts[i].x - Width / 2) : llx;
+			urx = (Pts[i].x + Width / 2) > urx ? (Pts[i].x + Width / 2) : urx;
+		}
+		else
+		{
+			lly = (Pts[i].y - Width / 2) < lly ? (Pts[i].y - Width / 2) : lly;
+			ury = (Pts[i].y + Width / 2) > ury ? (Pts[i].y + Width / 2) : ury;
+		}
+	}
+	// extend the end point
+	if (Path_type > 0)
+	{
+		if (Pts[0].x == Pts[1].x)
+		{
+			if (Pts[0].y < Pts[1].y)
+				lly = (Pts[0].y - Width / 2) < lly ? (Pts[0].y - Width / 2) : lly;
+			else
+				ury = (Pts[0].y + Width / 2) > ury ? (Pts[0].y + Width / 2) : ury;
+		}
+		else
+		{
+			if (Pts[0].x < Pts[1].x)
+				llx = (Pts[0].x - Width / 2) < llx ? (Pts[0].x - Width / 2) : llx;
+			else
+				urx = (Pts[0].x + Width / 2) > urx ? (Pts[0].x + Width / 2) : urx;
+		}
+		size_t n = Pts.size();
+		if (Pts[n - 2].x == Pts[n - 1].x)
+		{
+			if (Pts[n - 1].y < Pts[n - 2].y)
+				lly = (Pts[n - 1].y - Width / 2) < lly ? (Pts[n - 1].y - Width / 2) : lly;
+			else
+				ury = (Pts[n - 1].y + Width / 2) > ury ? (Pts[n - 1].y + Width / 2) : ury;
+		}
+		else 
+		{
+			if (Pts[n - 1].x < Pts[n - 2].x)
+				llx = (Pts[n - 1].x - Width / 2) < llx ? (Pts[n - 1].x - Width / 2) : llx;
+			else
+				urx = (Pts[n - 1].x + Width / 2) > urx ? (Pts[n - 1].x + Width / 2) : urx;
+		}
+	}
+	x = llx;
+	y = lly;
+	w = urx - llx;
+	h = ury - lly;
+
+	return true;
+}
+
 int Path::read(std::ifstream &in, std::string &msg)
 {
 	msg = "";
@@ -245,7 +317,7 @@ int Path::write(std::ofstream &out, std::string &msg)
 	writeByte(out, Integer_2);
 	writeShort(out, Path_type);
 
-	record_size = 4 + 8 * Pts.size();
+    record_size = 4 + short(8 * Pts.size());
 	writeShort(out, record_size);
 	writeByte(out, XY);
 	writeByte(out, Integer_4);

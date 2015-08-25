@@ -71,6 +71,27 @@ void Boundary::setXY(const std::vector<Point> &pts)
 	Pts = pts;
 }
 
+bool Boundary::bbox(int &x, int &y, int &w, int &h) const
+{
+	int llx = GDS_MAX_INT;
+	int lly = GDS_MAX_INT;
+	int urx = GDS_MIN_INT;
+	int ury = GDS_MIN_INT;
+	for (auto pt : Pts)
+	{
+		llx = pt.x < llx ? pt.x : llx;
+		lly = pt.y < lly ? pt.y : lly;
+		urx = pt.x > urx ? pt.x : urx;
+		ury = pt.y > ury ? pt.y : ury;
+	}
+	x = llx;
+	y = lly;
+	w = urx - llx;
+	h = ury - lly;
+
+	return true;
+}
+
 int Boundary::read(std::ifstream &in, std::string &msg)
 {
 	msg = "";
@@ -186,7 +207,7 @@ int Boundary::write(std::ofstream &out, std::string &msg)
 	writeByte(out, Integer_2);
 	writeShort(out, Data_type);
 
-	record_size = 4 + 8 * Pts.size();
+    record_size = 4 + short(8 * Pts.size());
 	writeShort(out, record_size);
 	writeByte(out, XY);
 	writeByte(out, Integer_4);

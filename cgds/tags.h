@@ -23,10 +23,14 @@
 #define TAGS_H
 #include <map>
 #include <string>
+#include <limits>
 
 namespace GDS {
 
 typedef unsigned char Byte;
+
+#define GDS_MAX_INT std::numeric_limits<int>::max()
+#define GDS_MIN_INT std::numeric_limits<int>::min()
 
 enum IO_ERROR_CODE
 {

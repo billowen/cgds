@@ -38,6 +38,7 @@ public:
 
 	Record_type tag() const;
 	std::string type() const;
+	virtual bool bbox(int &x, int &y, int &w, int &h) const;
 
 	virtual int read(std::ifstream &in, std::string &msg) = 0;
 	virtual int write(std::ofstream &out, std::string &msg) = 0;

@@ -101,6 +101,11 @@ void Text::setString(std::string string)
 	String = string;
 }
 
+bool Text::bbox(int &x, int &y, int &w, int &h) const
+{
+	return false;
+}
+
 int Text::read(std::ifstream &in, std::string &msg)
 {
 	msg = "";
@@ -267,7 +272,7 @@ int Text::write(std::ofstream &out, std::string &msg)
 	writeInteger(out, Pt.x);
 	writeInteger(out, Pt.y);
 
-	record_size = 4 + String.size();
+    record_size = 4 + short(String.size());
 	if (record_size % 2 != 0)
 		record_size += 1;
 	writeShort(out, record_size);
