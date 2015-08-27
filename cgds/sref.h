@@ -58,6 +58,7 @@ public:
 	short strans() const;
 	bool stransFlag(STRANS_FLAG flag) const;
 	virtual bool bbox(int &x, int &y, int &w, int &h) const;
+    std::shared_ptr<Structure> reference() { return ReferTo.lock(); }
 
 	void setStructName(std::string name);
 	void setXY(Point pt);

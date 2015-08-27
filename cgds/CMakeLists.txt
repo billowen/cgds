@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.0)
-find_package(Qt5Gui)
+find_package(Qt5Gui REQUIRED)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -16,6 +16,7 @@ SET (INCS
 	node.h
 	text.h
 	library.h
+    graphicsitems.h
 )
 SET (SRCS
 	boundary.cpp
@@ -28,6 +29,7 @@ SET (SRCS
 	node.cpp
 	text.cpp
 	library.cpp
+    graphicsitems.cpp
 	)
 add_library (libgds ${INCS} ${SRCS})
 
@@ -35,7 +37,6 @@ add_library (libgds ${INCS} ${SRCS})
 
 target_include_directories(libgds PUBLIC ${CMAKE_SOURCE_DIR})
 target_link_libraries(libgds Qt5::Gui)
-
 
 
 
