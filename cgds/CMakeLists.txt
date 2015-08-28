@@ -17,6 +17,7 @@ SET (INCS
 	text.h
 	library.h
     graphicsitems.h
+    techfile.h
 )
 SET (SRCS
 	boundary.cpp
@@ -30,6 +31,7 @@ SET (SRCS
 	text.cpp
 	library.cpp
     graphicsitems.cpp
+    techfile.cpp
 	)
 add_library (libgds ${INCS} ${SRCS})
 

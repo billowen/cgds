@@ -4,6 +4,7 @@
 #include <QtGui/QPolygon>
 #include <QtGui/QPainter>
 #include <QtGui/QPainterPath>
+#include "techfile.h"
 #include "structures.h"
 #include "boundary.h"
 #include "path.h"
@@ -13,21 +14,23 @@
 
 namespace GDS
 {
-void paintPolygon(QPainter &painter, std::shared_ptr<Element> data);
-void paintPath(QPainter &painter, std::shared_ptr<Element> data);
-void paintSRef(QPainter &painter, std::shared_ptr<Element> data, int level = -1);
-void paintARef(QPainter &painter, std::shared_ptr<Element> data, int level = -1);
-void paintCell(QPainter &painter, std::shared_ptr<Structure> cell,
+void PaintPolygon(QPainter &painter, std::shared_ptr<Element> data);
+void PaintPath(QPainter &painter, std::shared_ptr<Element> data);
+void PaintSRef(QPainter &painter, std::shared_ptr<Element> data, int level = -1);
+void PaintARef(QPainter &painter, std::shared_ptr<Element> data, int level = -1);
+void PaintCell(QPainter &painter, std::shared_ptr<Structure> cell,
                int level = -1,
                int offset_x = 0, int offset_y = 0,
                double mag = 1.0, double angle = 0.0,
                bool reflect = false);
+void InitPainter(QPainter &painter, short layer, short purpose);
 
 
 ViewItem::ViewItem(std::shared_ptr<Element> data, QGraphicsItem *parent)
     : QGraphicsItem(parent)
 {
-    Data = data;
+    data_ = data;
+    setFlags(ItemIsSelectable);
 }
 
 QRectF ViewItem::boundingRect() const
@@ -43,36 +46,54 @@ QRectF ViewItem::boundingRect() const
 
 void ViewItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-
+    switch(tag())
+    {
+    case BOUNDARY:
+        PaintPolygon(*painter, data_.lock());
+        break;
+    case PATH:
+        PaintPath(*painter, data_.lock());
+        break;
+    case SREF:
+        PaintSRef(*painter, data_.lock());
+        break;
+    case AREF:
+        PaintARef(*painter, data_.lock());
+        break;
+    default:
+        break;
+    }
 }
 
-Record_type ViewItem::type() const
+Record_type ViewItem::tag() const
 {
-    assert(!Data.expired());
-    return (Data.lock())->tag();
+    assert(!data_.expired());
+    return (data_.lock())->tag();
 }
 
-std::shared_ptr<Element> data() const
+std::shared_ptr<Element> ViewItem::data()
 {
-    return Data.lock();
+    return data_.lock();
 }
 
-void paintPolygon(QPainter &painter, std::shared_ptr<Element> data)
+void PaintPolygon(QPainter &painter, std::shared_ptr<Element> data)
 {
     auto polygon = std::dynamic_pointer_cast<Boundary>(data);
     if (!polygon)
         return;
+    InitPainter(painter, polygon->layer(), polygon->dataType());
     QPolygon tmp;
     for (Point pt : polygon->xy())
         tmp << QPoint(pt.x, pt.y);
     painter.drawPolygon(tmp);
 }
 
-void paintPath(QPainter &painter, std::shared_ptr<Element> data)
+void PaintPath(QPainter &painter, std::shared_ptr<Element> data)
 {
     auto path = std::dynamic_pointer_cast<Path>(data);
     if (!path)
         return;
+    InitPainter(painter, path->layer(), path->dataType());
     auto pts = path->xy();
     if (pts.size() < 2)
         return;
@@ -87,17 +108,17 @@ void paintPath(QPainter &painter, std::shared_ptr<Element> data)
     painter.drawPath(stroker.createStroke(tmp));
 }
 
-void paintSRef(QPainter &painter, std::shared_ptr<Element> data, int level)
+void PaintSRef(QPainter &painter, std::shared_ptr<Element> data, int level)
 {
     auto sref = std::dynamic_pointer_cast<SRef>(data);
     if (!sref)
         return;
-    paintCell(painter, sref->reference(), level,
+    PaintCell(painter, sref->reference(), level,
               (sref->xy()).x, (sref->xy()).y,
               sref->mag(), sref->angle(), sref->stransFlag(REFLECTION));
 }
 
-void paintARef(QPainter &painter, std::shared_ptr<Element> data, int level)
+void PaintARef(QPainter &painter, std::shared_ptr<Element> data, int level)
 {
     auto aref = std::dynamic_pointer_cast<ARef>(data);
     if (!aref)
@@ -115,14 +136,14 @@ void paintARef(QPainter &painter, std::shared_ptr<Element> data, int level)
         {
             int cur_x = row_offset_x + j * col_pitch_x;
             int cur_y = row_offset_y + j * col_pitch_y;
-            paintCell(painter, aref->reference(), level,
+            PaintCell(painter, aref->reference(), level,
                       cur_x, cur_y,
                       aref->mag(), aref->angle(), aref->stransFlag(REFLECTION));
         }
     }
 }
 
-void paintCell(QPainter &painter, std::shared_ptr<Structure> cell, int level, int offset_x, int offset_y, double mag, double angle, bool reflect)
+void PaintCell(QPainter &painter, std::shared_ptr<Structure> cell, int level, int offset_x, int offset_y, double mag, double angle, bool reflect)
 {
     QTransform back = painter.transform();
     QTransform reflect_transform, mag_transform, rotate_transform, shift_transform;
@@ -141,28 +162,28 @@ void paintCell(QPainter &painter, std::shared_ptr<Structure> cell, int level, in
     {
         int x, y, w, h;
         cell->bbox(x, y, w, h);
-        QRect rect(x, y, w, h);
+        QRectF rect(x, y, w, h);
         painter.drawRect(rect);
-        painter.drawText(rect, Qt::AlignCenter, cell->name());
+        painter.drawText(rect, Qt::AlignCenter, QString(cell->name().c_str()));
     }
     else
     {
         for (size_t i = 0; i < cell->size(); i++)
         {
-            std::shared_ptr<Elmenent> node = cell->get(i);
+            std::shared_ptr<Element> node = cell->get(i);
             switch (node->tag())
             {
             case BOUNDARY:
-                paintPolygon(painter, node);
+                PaintPolygon(painter, node);
                 break;
             case PATH:
-                paintPath(painter, node);
+                PaintPath(painter, node);
                 break;
             case AREF:
-                paintARef(painter, node, level - 1);
+                PaintARef(painter, node, level - 1);
                 break;
             case SREF:
-                paintSRef(painter, node, level - 1);
+                PaintSRef(painter, node, level - 1);
                 break;
             default:
                 break;
@@ -170,6 +191,26 @@ void paintCell(QPainter &painter, std::shared_ptr<Structure> cell, int level, in
         }
     }
     painter.setTransform(back);
+}
+
+void InitPainter(QPainter &painter, short layer, short purpose)
+{
+    Techfile& techfile = Techfile::instance();
+    char r, g, b;
+    bool flag;
+    flag = techfile.GetLayerColor(layer, purpose, r, g, b);
+    assert(flag);
+    std::string stipple_name;
+    StipplePattern stipple_pattern;
+    flag = techfile.GetLayerStippleName(layer, purpose, stipple_name);
+    assert(flag);
+    flag = techfile.GetLayerStipplePattern(layer, purpose, stipple_pattern);
+    assert(flag);
+    painter.setPen(QColor(r, g, b));
+    QBrush brush;
+    brush.setColor(QColor(r, g, b));
+    brush.setStyle(kBuildInStipple[stipple_name]);
+    painter.setBrush(brush);
 }
 
 }

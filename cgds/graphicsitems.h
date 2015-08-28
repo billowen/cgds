@@ -1,3 +1,6 @@
+#ifndef GDS_GRAPHICS_ITEMS_H
+#define GDS_GRAPHICS_ITEMS_H
+
 #include <QtWidgets/QGraphicsItem>
 #include <QRectF>
 #include <memory>
@@ -16,11 +19,13 @@ public:
     virtual QRectF boundingRect() const;
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
-    Record_type type() const;
-    std::shared_ptr<Element> data() const;
+    Record_type tag() const;
+    std::shared_ptr<Element> data();
 
 private:
-    std::weak_ptr<Element> Data;
+    std::weak_ptr<Element> data_;
 };
 
 }
+
+#endif
