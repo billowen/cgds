@@ -47,7 +47,7 @@ short Path::layer() const
 	return Layer;
 }
 
-short Path::dataType() const
+short Path::data_type() const
 {
 	return Data_type;
 }
@@ -57,7 +57,7 @@ int Path::width() const
 	return Width;
 }
 
-short Path::pathType() const
+short Path::path_type() const
 {
 	return Path_type;
 }
@@ -67,27 +67,27 @@ std::vector<Point> Path::xy() const
 	return Pts;
 }
 
-void Path::setLayer(short layer)
+void Path::set_layer(short layer)
 {
 	Layer = layer;
 }
 
-void Path::setDataType(short data_type)
+void Path::set_data_type(short data_type)
 {
 	Data_type = data_type;
 }
 
-void Path::setWidth(int width)
+void Path::set_width(int width)
 {
 	Width = width;
 }
 
-void Path::setPathType(short type)
+void Path::set_path_type(short type)
 {
 	Path_type = type;
 }
 
-void Path::setXY(const std::vector<Point> &pts)
+void Path::set_xy(const std::vector<Point> &pts)
 {
 	Pts.clear();
 	Pts = pts;

@@ -54,17 +54,17 @@ public:
 	virtual ~Path();
 
 	short layer() const;
-	short dataType() const;
+    short data_type() const;
 	int width() const;
-	short pathType() const;
+    short path_type() const;
 	std::vector<Point> xy() const;
 	virtual bool bbox(int &x, int &y, int &w, int &h) const;
 
-	void setLayer(short layer);
-	void setDataType(short data_type);
-	void setWidth(int width);
-	void setPathType(short type);
-	void setXY(const std::vector<Point> &pts);
+    void set_layer(short layer);
+    void set_data_type(short data_type);
+    void set_width(int width);
+    void set_path_type(short type);
+    void set_xy(const std::vector<Point> &pts);
 
 	virtual int read(std::ifstream &in, std::string &msg);
 	virtual int write(std::ofstream &out, std::string &msg);

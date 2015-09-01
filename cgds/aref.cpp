@@ -85,43 +85,43 @@ bool ARef::stransFlag(STRANS_FLAG flag) const
     return (Strans & flag) != 0;
 }
 
-void ARef::setStructName(std::string name)
+void ARef::set_struct_name(std::string name)
 {
 	SName = name;
 }
 
-void ARef::setRowCol(int row, int col)
+void ARef::set_row_col(int row, int col)
 {
 	Row = row;
 	Col = col;
 }
 
-void ARef::setXY(std::vector<Point> pts)
+void ARef::set_xy(std::vector<Point> pts)
 {
 	Pts = pts;
 }
 
-void ARef::setAngle(double angle)
+void ARef::set_angle(double angle)
 {
 	Angle = angle;
 }
 
-void ARef::setMag(double mag)
+void ARef::set_mag(double mag)
 {
 	Mag = mag;
 }
 
-void ARef::setStrans(short strans)
+void ARef::set_strans(short strans)
 {
 	Strans = strans;
 }
 
-void ARef::setStrans(STRANS_FLAG flag, bool enable)
+void ARef::set_strans(STRANS_FLAG flag, bool enable)
 {
 	Strans = enable ? (Strans | flag) : (Strans & (~flag));
 }
 
-void ARef::setReference(std::shared_ptr<Structure> ref)
+void ARef::set_reference(std::shared_ptr<Structure> ref)
 {
 	ReferTo = ref;
 }

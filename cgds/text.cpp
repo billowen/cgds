@@ -46,7 +46,7 @@ short Text::layer() const
 	return Layer;
 }
 
-short Text::textType() const
+short Text::text_type() const
 {
 	return Text_type;
 }
@@ -71,32 +71,32 @@ std::string Text::string() const
 	return String;
 }
 
-void Text::setLayer(short layer)
+void Text::set_layer(short layer)
 {
 	Layer = layer;
 }
 
-void Text::setTextType(short text_type)
+void Text::set_text_type(short text_type)
 {
 	Text_type = text_type;
 }
 
-void Text::setPresentation(short presentation)
+void Text::set_presentation(short presentation)
 {
 	Presentation = presentation;
 }
 
-void Text::setStrans(short strans)
+void Text::set_strans(short strans)
 {
 	Strans = strans;
 }
 
-void Text::setXY(Point pt)
+void Text::set_xy(Point pt)
 {
 	Pt = pt;
 }
 
-void Text::setString(std::string string)
+void Text::set_string(std::string string)
 {
 	String = string;
 }

@@ -1,5 +1,8 @@
 cmake_minimum_required (VERSION 3.0)
-find_package(Qt5Gui REQUIRED)
+ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}
+    ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS}")
+find_package(Qt5Gui)
+find_package(Qt5Widgets)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -18,6 +21,7 @@ SET (INCS
 	library.h
     graphicsitems.h
     techfile.h
+    canvas.h
 )
 SET (SRCS
 	boundary.cpp
@@ -32,13 +36,16 @@ SET (SRCS
 	library.cpp
     graphicsitems.cpp
     techfile.cpp
+    canvas.cpp
 	)
-add_library (libgds ${INCS} ${SRCS})
+add_library (libgds STATIC ${INCS} ${SRCS})
+add_executable(viewer main.cpp)
 
 
 
 target_include_directories(libgds PUBLIC ${CMAKE_SOURCE_DIR})
 target_link_libraries(libgds Qt5::Gui)
+target_link_libraries(viewer Qt5::Widgets)
 
 
 

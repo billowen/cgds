@@ -45,7 +45,7 @@ short Boundary::layer() const
 	return Layer;
 }
 
-short Boundary::dataType() const
+short Boundary::data_type() const
 {
 	return Data_type;
 }
@@ -55,17 +55,17 @@ std::vector<Point> Boundary::xy() const
 	return Pts;
 }
 
-void Boundary::setLayer(short layer)
+void Boundary::set_layer(short layer)
 {
 	Layer = layer;
 }
 
-void Boundary::setDataType(short data_type)
+void Boundary::set_data_type(short data_type)
 {
 	Data_type = data_type;
 }
 
-void Boundary::setXY(const std::vector<Point> &pts)
+void Boundary::set_xy(const std::vector<Point> &pts)
 {
 	Pts.clear();
 	Pts = pts;

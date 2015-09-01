@@ -37,14 +37,12 @@ public:
 
     std::string layer_name() const { return layer_name_; }
     std::string purpose_name() const { return purpose_name_; }
-    std::string packet_name() const { return packet_name_; }
     void color(char &r, char &g, char &b) const { r = r_; g = g_; b = b_; }
     std::string stipple_name() const { return stipple_name_; }
-    StipplePattern stipple_pattern() const { return stipple_pattern; }
+    StipplePattern stipple_pattern() const { return stipple_pattern_; }
 
     void set_layer_name(std::string name) { layer_name_ = name; }
     void set_purpose_name(std::string name) { purpose_name_ = name; }
-    void set_packet_name(std::string name) { packet_name_ = name; }
 
 private:
     std::string layer_name_;

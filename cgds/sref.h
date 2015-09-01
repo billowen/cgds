@@ -60,13 +60,13 @@ public:
 	virtual bool bbox(int &x, int &y, int &w, int &h) const;
     std::shared_ptr<Structure> reference() { return ReferTo.lock(); }
 
-	void setStructName(std::string name);
-	void setXY(Point pt);
-	void setAngle(double angle);
-	void setMag(double mag);
-	void setStrans(short strans);
-	void setStrans(STRANS_FLAG flag, bool enable = true);
-	void setReference(std::shared_ptr<Structure> ref);
+    void set_struct_name(std::string name);
+    void set_xy(Point pt);
+    void set_angle(double angle);
+    void set_mag(double mag);
+    void set_strans(short strans);
+    void set_strans(STRANS_FLAG flag, bool enable = true);
+    void set_reference(std::shared_ptr<Structure> ref);
 
 	virtual int read(std::ifstream &in, std::string &msg);
 	virtual int write(std::ofstream &out, std::string &msg);

@@ -56,8 +56,8 @@ public:
 	std::shared_ptr<Element> get(int index) const;
 	bool bbox(int &x, int &y, int &w, int &h) const;
 
-	void add(std::shared_ptr<Element> new_element);
-	void addReferBy(std::shared_ptr<Structure> cell);
+    void Add(std::shared_ptr<Element> new_element);
+    void AddReferBy(std::shared_ptr<Structure> cell);
 
 	int read(std::ifstream &in, std::string &msg);
 	int write(std::ofstream &out, std::string &msg);

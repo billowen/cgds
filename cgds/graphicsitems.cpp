@@ -35,9 +35,9 @@ ViewItem::ViewItem(std::shared_ptr<Element> data, QGraphicsItem *parent)
 
 QRectF ViewItem::boundingRect() const
 {
-    assert(!Data.expired());
+    assert(!data_.expired());
     int x, y, w, h;
-    auto entity = Data.lock();
+    auto entity = data_.lock();
     if (entity->bbox(x, y, w, h))
         return QRectF(x, y, w, h);
     else
@@ -81,7 +81,7 @@ void PaintPolygon(QPainter &painter, std::shared_ptr<Element> data)
     auto polygon = std::dynamic_pointer_cast<Boundary>(data);
     if (!polygon)
         return;
-    InitPainter(painter, polygon->layer(), polygon->dataType());
+    InitPainter(painter, polygon->layer(), polygon->data_type());
     QPolygon tmp;
     for (Point pt : polygon->xy())
         tmp << QPoint(pt.x, pt.y);
@@ -93,7 +93,7 @@ void PaintPath(QPainter &painter, std::shared_ptr<Element> data)
     auto path = std::dynamic_pointer_cast<Path>(data);
     if (!path)
         return;
-    InitPainter(painter, path->layer(), path->dataType());
+    InitPainter(painter, path->layer(), path->data_type());
     auto pts = path->xy();
     if (pts.size() < 2)
         return;
@@ -209,7 +209,7 @@ void InitPainter(QPainter &painter, short layer, short purpose)
     painter.setPen(QColor(r, g, b));
     QBrush brush;
     brush.setColor(QColor(r, g, b));
-    brush.setStyle(kBuildInStipple[stipple_name]);
+    brush.setStyle(Qt::BrushStyle(kBuildInStipple[stipple_name]));
     painter.setBrush(brush);
 }
 

@@ -73,37 +73,37 @@ bool SRef::stransFlag(STRANS_FLAG flag) const
 	return Strans & flag;
 }
 
-void SRef::setStructName(std::string name)
+void SRef::set_struct_name(std::string name)
 {
 	SName = name;
 }
 
-void SRef::setXY(Point pt)
+void SRef::set_xy(Point pt)
 {
 	Pt = pt;
 }
 
-void SRef::setAngle(double angle)
+void SRef::set_angle(double angle)
 {
 	Angle = angle;
 }
 
-void SRef::setMag(double mag)
+void SRef::set_mag(double mag)
 {
 	Mag = mag;
 }
 
-void SRef::setStrans(short strans)
+void SRef::set_strans(short strans)
 {
 	Strans = strans;
 }
 
-void SRef::setStrans(STRANS_FLAG flag, bool enable)
+void SRef::set_strans(STRANS_FLAG flag, bool enable)
 {
 	Strans = enable ? (Strans | flag) : (Strans & (~flag));
 }
 
-void SRef::setReference(std::shared_ptr<Structure> ref)
+void SRef::set_reference(std::shared_ptr<Structure> ref)
 {
 	ReferTo = ref;
 }

@@ -53,7 +53,7 @@ Record_type Element::tag() const
 	return Tag;
 }
 
-void Element::setTag(Record_type tag)
+void Element::set_tag(Record_type tag)
 {
 	Tag = tag;
 }

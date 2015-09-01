@@ -80,7 +80,7 @@ std::shared_ptr<Structure> Library::get(int index)
 	return Cells[index];
 }
 
-std::shared_ptr<Structure> Library::add(std::string name)
+std::shared_ptr<Structure> Library::Add(std::string name)
 {
 	std::shared_ptr<Structure> ret = std::make_shared<Structure>();
 	for (auto e : Cells)
@@ -117,7 +117,7 @@ std::shared_ptr<Structure> Library::get(std::string name)
 	return std::shared_ptr<Structure>();
 }
 
-void Library::del(std::string name)
+void Library::Del(std::string name)
 {
 	for (size_t i = 0; i < size(); i++)
 	{
@@ -132,7 +132,7 @@ void Library::del(std::string name)
 	}
 }
 
-void Library::buildCellLinks(bool del_dirty_links)
+void Library::BuildCellLinks(bool del_dirty_links)
 {
 	for (auto cell : Cells)
 	{
@@ -144,19 +144,46 @@ void Library::buildCellLinks(bool del_dirty_links)
 				auto temp = std::dynamic_pointer_cast<SRef>(element);
 				std::string sname = temp->structName();
 				auto source_cell = get(sname);
-				temp->setReference(source_cell);
-				source_cell->addReferBy(cell);
+                temp->set_reference(source_cell);
+                source_cell->AddReferBy(cell);
 			}
 			else if (element->tag() == AREF)
 			{
 				auto temp = std::dynamic_pointer_cast<ARef>(element);
 				std::string sname = temp->structName();
 				auto source_cell = get(sname);
-				temp->setReference(source_cell);
-				source_cell->addReferBy(cell);
+                temp->set_reference(source_cell);
+                source_cell->AddReferBy(cell);
 			}
 		}
 	}
+}
+
+void Library::CollectLayers(std::shared_ptr<Techfile> tech_file)
+{
+    for (auto cell : Cells)
+    {
+        for (size_t i = 0; i < cell->size(); i++)
+        {
+            auto element = cell->get(i);
+            if (element->tag() == SREF)
+            {
+                auto temp = std::dynamic_pointer_cast<SRef>(element);
+                std::string sname = temp->structName();
+                auto source_cell = get(sname);
+                temp->set_reference(source_cell);
+                source_cell->AddReferBy(cell);
+            }
+            else if (element->tag() == AREF)
+            {
+                auto temp = std::dynamic_pointer_cast<ARef>(element);
+                std::string sname = temp->structName();
+                auto source_cell = get(sname);
+                temp->set_reference(source_cell);
+                source_cell->AddReferBy(cell);
+            }
+        }
+    }
 }
 
 int Library::read(std::ifstream &in, std::string &msg)

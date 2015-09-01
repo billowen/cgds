@@ -54,19 +54,19 @@ public:
 	virtual ~Text();
 
 	short layer() const;
-	short textType() const;
+    short text_type() const;
 	short presentation() const;
 	short strans() const;
 	Point xy() const;
 	std::string string() const;
 	virtual bool bbox(int &x, int &y, int &w, int &h) const;
 
-	void setLayer(short layer);
-	void setTextType(short text_type);
-	void setPresentation(short presentation);
-	void setStrans(short strans);
-	void setXY(Point pt);
-	void setString(std::string string);
+    void set_layer(short layer);
+    void set_text_type(short text_type);
+    void set_presentation(short presentation);
+    void set_strans(short strans);
+    void set_xy(Point pt);
+    void set_string(std::string string);
 
 	virtual int read(std::ifstream &in, std::string &msg);
 	virtual int write(std::ofstream &out, std::string &msg);

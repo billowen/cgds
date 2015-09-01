@@ -5,12 +5,12 @@
 namespace GDS
 {
 
-DisplayLayerNode(std::string layer_name, std::string purpose_name, std::string stipple_name = "NoBrush")
+DisplayLayerNode::DisplayLayerNode(std::string layer_name, std::string purpose_name, std::string stipple_name)
     :layer_name_(layer_name), purpose_name_(purpose_name), stipple_name_(stipple_name)
 {
-    r = rand() % 256;
-    g = rand() % 256;
-    b = rand() % 256;
+    r_ = rand() % 256;
+    g_ = rand() % 256;
+    b_ = rand() % 256;
 }
 
 Techfile& Techfile::instance()
@@ -79,9 +79,51 @@ bool Techfile::GetLayerColor(short layer, short purpose, char &r, char &g, char 
         if (n.layer_name() == layer_name && n.purpose_name() == purpose_name)
         {
             existed = true;
-
+            n.color(r, g, b);
+            break;
         }
     }
+    return existed;
+}
+
+bool Techfile::GetLayerStippleName(short layer, short purpose, std::string &stipple_name) const
+{
+    std::string layer_name = ParserLayer(layer);
+    std::string purpose_name = ParserLayer(purpose);
+    if (layer_name == "" || purpose_name == "")
+        return false;
+
+    bool existed = false;
+    for (auto n : display_priority_)
+    {
+        if (n.layer_name() == layer_name && n.purpose_name() == purpose_name)
+        {
+            existed = true;
+            stipple_name = n.stipple_name();
+            break;
+        }
+    }
+    return existed;
+}
+
+bool Techfile::GetLayerStipplePattern(short layer, short purpose, StipplePattern &pattern) const
+{
+    std::string layer_name = ParserLayer(layer);
+    std::string purpose_name = ParserLayer(purpose);
+    if (layer_name == "" || purpose_name == "")
+        return false;
+
+    bool existed = false;
+    for (auto n : display_priority_)
+    {
+        if (n.layer_name() == layer_name && n.purpose_name() == purpose_name)
+        {
+            existed = true;
+            pattern = n.stipple_pattern();
+            break;
+        }
+    }
+    return existed;
 }
 
 std::string Techfile::ParserLayer(short layer) const

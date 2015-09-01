@@ -30,6 +30,7 @@
 
 namespace GDS 
 {
+class Techfile;
 
 class Library {
 	short           Version;
@@ -70,14 +71,15 @@ public:
 		* \return	The pointer to the new structure. If failed to add the new structure, the
 		*			return value will be nullptr.
 		*/
-	std::shared_ptr<Structure> add(std::string name);
+    std::shared_ptr<Structure> Add(std::string name);
 	/*!
 		* Delete a structure in the library.
 		*
 		* \param [in] name			Name of structure.
 		*/
-	void del(std::string name);
-	void buildCellLinks(bool del_dirty_links = false);
+    void Del(std::string name);
+    void BuildCellLinks(bool del_dirty_links = false);
+    void CollectLayers(std::shared_ptr<Techfile> tech_file);
 
 	int read(std::ifstream &in, std::string &msg);
 	int write(std::ofstream &out, std::string &msg);
