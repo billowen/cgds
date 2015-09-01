@@ -79,7 +79,7 @@ public:
 		*/
     void Del(std::string name);
     void BuildCellLinks(bool del_dirty_links = false);
-    void CollectLayers(std::shared_ptr<Techfile> tech_file);
+    void CollectLayers(Techfile &tech_file);
 
 	int read(std::ifstream &in, std::string &msg);
 	int write(std::ofstream &out, std::string &msg);

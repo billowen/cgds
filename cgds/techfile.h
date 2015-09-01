@@ -37,7 +37,7 @@ public:
 
     std::string layer_name() const { return layer_name_; }
     std::string purpose_name() const { return purpose_name_; }
-    void color(char &r, char &g, char &b) const { r = r_; g = g_; b = b_; }
+    void color(int &r, int &g, int &b) const { r = r_; g = g_; b = b_; }
     std::string stipple_name() const { return stipple_name_; }
     StipplePattern stipple_pattern() const { return stipple_pattern_; }
 
@@ -50,7 +50,7 @@ private:
     // If the stipple_pattern is empty, use the build in pattern;
     std::string stipple_name_;
     StipplePattern stipple_pattern_;
-    char r_, g_, b_;
+    int r_, g_, b_;
 };
 
 class Techfile
@@ -63,7 +63,7 @@ public:
     bool AddLayer(short layer, short purpose,
                   std::string layer_name = "", std::string purpose_name = "",
                   std::string packet_name = "NoBrush");
-    bool GetLayerColor(short layer, short purpose, char &r, char &g, char &b) const;
+    bool GetLayerColor(short layer, short purpose, int &r, int &g, int &b) const;
     bool GetLayerStippleName(short layer, short purpose, std::string &stipple_name) const;
     bool GetLayerStipplePattern(short layer, short purpose, StipplePattern &pattern) const;
 

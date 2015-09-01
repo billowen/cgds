@@ -25,9 +25,13 @@
 #include "gdsio.h"
 #include <sstream>
 #include <ctime>
+#include "techfile.h"
 #include "elements.h"
 #include "aref.h"
 #include "sref.h"
+#include "boundary.h"
+#include "path.h"
+#include "text.h"
 
 namespace GDS 
 {
@@ -82,7 +86,7 @@ std::shared_ptr<Structure> Library::get(int index)
 
 std::shared_ptr<Structure> Library::Add(std::string name)
 {
-	std::shared_ptr<Structure> ret = std::make_shared<Structure>();
+    std::shared_ptr<Structure> ret;
 	for (auto e : Cells)
 	{
 		if (!e)
@@ -159,28 +163,35 @@ void Library::BuildCellLinks(bool del_dirty_links)
 	}
 }
 
-void Library::CollectLayers(std::shared_ptr<Techfile> tech_file)
+void Library::CollectLayers(Techfile &tech_file)
 {
     for (auto cell : Cells)
     {
         for (size_t i = 0; i < cell->size(); i++)
         {
             auto element = cell->get(i);
-            if (element->tag() == SREF)
+            switch (element->tag())
             {
-                auto temp = std::dynamic_pointer_cast<SRef>(element);
-                std::string sname = temp->structName();
-                auto source_cell = get(sname);
-                temp->set_reference(source_cell);
-                source_cell->AddReferBy(cell);
+            case BOUNDARY:
+            {
+                auto boundary = std::dynamic_pointer_cast<Boundary>(element);
+                tech_file.AddLayer(boundary->layer(), boundary->data_type());
+                break;
             }
-            else if (element->tag() == AREF)
+            case PATH:
             {
-                auto temp = std::dynamic_pointer_cast<ARef>(element);
-                std::string sname = temp->structName();
-                auto source_cell = get(sname);
-                temp->set_reference(source_cell);
-                source_cell->AddReferBy(cell);
+                auto path = std::dynamic_pointer_cast<Path>(element);
+                tech_file.AddLayer(path->layer(), path->data_type());
+                break;
+            }
+            case TEXT:
+            {
+                auto text = std::dynamic_pointer_cast<Text>(element);
+                tech_file.AddLayer(text->layer(), text->text_type());
+                break;
+            }
+            default:
+                break;
             }
         }
     }

@@ -106,6 +106,7 @@ void PaintPath(QPainter &painter, std::shared_ptr<Element> data)
     stroker.setCapStyle(Qt::FlatCap);
     stroker.setWidth(path->width());
     painter.drawPath(stroker.createStroke(tmp));
+    painter.fillPath(stroker.createStroke(tmp), painter.brush());
 }
 
 void PaintSRef(QPainter &painter, std::shared_ptr<Element> data, int level)
@@ -196,7 +197,7 @@ void PaintCell(QPainter &painter, std::shared_ptr<Structure> cell, int level, in
 void InitPainter(QPainter &painter, short layer, short purpose)
 {
     Techfile& techfile = Techfile::instance();
-    char r, g, b;
+    int r, g, b;
     bool flag;
     flag = techfile.GetLayerColor(layer, purpose, r, g, b);
     assert(flag);
@@ -206,7 +207,10 @@ void InitPainter(QPainter &painter, short layer, short purpose)
     assert(flag);
     flag = techfile.GetLayerStipplePattern(layer, purpose, stipple_pattern);
     assert(flag);
-    painter.setPen(QColor(r, g, b));
+    QPen pen(QColor(r, g, b));
+   // pen.setWidth(1);
+    pen.setCosmetic(true);
+    painter.setPen(pen);
     QBrush brush;
     brush.setColor(QColor(r, g, b));
     brush.setStyle(Qt::BrushStyle(kBuildInStipple[stipple_name]));

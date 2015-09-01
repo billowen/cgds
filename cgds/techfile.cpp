@@ -24,27 +24,27 @@ bool Techfile::AddLayer(short layer, short purpose,
                         std::string packet_name)
 {
     // If the new layer has existed.
-    assert(layer >= 0 && layer <= 255);
-    assert(purpose >= 0 && layer <= 255);
+   // assert(layer >= 0 && layer <= 255);
+   // assert(purpose >= 0 && layer <= 255);
 
     bool layer_exist = (ParserLayer(layer) != "");
-    bool purpose_exist = (ParserPurpose(layer) != "");
+    bool purpose_exist = (ParserPurpose(purpose) != "");
     // check the layer_name is existed or not;
     if (!layer_exist && layers_.find(layer_name) != layers_.end())
         return false;
     if (!purpose_exist && purpose_.find(purpose_name) != purpose_.end())
         return false;
-    if (layer_exist && layer_name != ParserLayer(layer))
-        ChangeLayerName(layer, layer_name);
-    if (purpose_exist && purpose_name != ParserPurpose(purpose))
-        ChangePurposeName(purpose, purpose_name);
 
-    if (!layer_exist)
+    if (layer_exist && layer_name != "" && layer_name != ParserLayer(layer))
+        ChangeLayerName(layer, layer_name);
+    else if (!layer_exist)
     {
         layer_name = (layer_name == "") ? "L" + std::to_string(layer) : layer_name;
         layers_.insert(std::make_pair(layer_name, layer));
     }
-    if (!purpose_exist)
+    if (purpose_exist && purpose_name != "" && purpose_name != ParserPurpose(purpose))
+        ChangePurposeName(purpose, purpose_name);
+    else if (!purpose_exist)
     {
         purpose_name = (purpose_name == "") ? "P" + std::to_string(purpose) : purpose_name;
         purpose_.insert(std::make_pair(purpose_name, purpose));
@@ -66,10 +66,10 @@ bool Techfile::AddLayer(short layer, short purpose,
     return true;
 }
 
-bool Techfile::GetLayerColor(short layer, short purpose, char &r, char &g, char &b) const
+bool Techfile::GetLayerColor(short layer, short purpose, int &r, int &g, int &b) const
 {
     std::string layer_name = ParserLayer(layer);
-    std::string purpose_name = ParserLayer(purpose);
+    std::string purpose_name = ParserPurpose(purpose);
     if (layer_name == "" || purpose_name == "")
         return false;
 
@@ -89,7 +89,7 @@ bool Techfile::GetLayerColor(short layer, short purpose, char &r, char &g, char 
 bool Techfile::GetLayerStippleName(short layer, short purpose, std::string &stipple_name) const
 {
     std::string layer_name = ParserLayer(layer);
-    std::string purpose_name = ParserLayer(purpose);
+    std::string purpose_name = ParserPurpose(purpose);
     if (layer_name == "" || purpose_name == "")
         return false;
 
@@ -109,7 +109,7 @@ bool Techfile::GetLayerStippleName(short layer, short purpose, std::string &stip
 bool Techfile::GetLayerStipplePattern(short layer, short purpose, StipplePattern &pattern) const
 {
     std::string layer_name = ParserLayer(layer);
-    std::string purpose_name = ParserLayer(purpose);
+    std::string purpose_name = ParserPurpose(purpose);
     if (layer_name == "" || purpose_name == "")
         return false;
 

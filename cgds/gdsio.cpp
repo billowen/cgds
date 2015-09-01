@@ -21,6 +21,7 @@
  **/
 
 #include <sstream>
+#include <cmath>
 #include "gdsio.h"
 
 
@@ -84,8 +85,8 @@ bool GDS::readString(std::ifstream &in, int size, std::string &data)
         in.read(&c, 1);
 		if (in.fail())
 			return false;
-        data.push_back(c);
-
+        if (c != '\0')
+            data.push_back(c);
     }
     return true;
 }
@@ -130,7 +131,7 @@ bool GDS::readDouble(std::ifstream &in, double &data)
         mantissa = mantissa | buffer[i];
     }
 
-	data = mantissa / pow(2.0, 56);
+    data = mantissa / std::pow(2.0, 56);
     if (exponent >= 0)
     {
         for (int j = 0; j < exponent; j++)

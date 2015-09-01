@@ -135,7 +135,7 @@ bool ARef::bbox(int &x, int &y, int &w, int &h) const
     if (!ref_cell->bbox(ref_x, ref_y, ref_w, ref_h))
         return false;
 
-    assert(Pts.size() != 3);
+    assert(Pts.size() == 3);
     QRect ref_rect(ref_x, ref_y, ref_w, ref_h);
     int row_pitch_x = (Pts[2].x - Pts[0].x) / row();
     int row_pitch_y = (Pts[2].y - Pts[0].y) / row();
